@@ -1,4 +1,5 @@
 local global = {}
+local vim = vim
 local home = os.getenv("HOME")
 local path_sep = "/"
 local os_name = vim.loop.os_uname().sysname

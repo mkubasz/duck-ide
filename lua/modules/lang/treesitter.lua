@@ -6,7 +6,7 @@ local treesitter = function()
     highlight = {
       enable = true,
     },
-        textobjects = {
+    textobjects = {
       lsp_interop = {
         enable = enable,
         peek_definition_code = { ["DF"] = "@function.outer", ["CF"] = "@class.outer" },
@@ -14,13 +14,26 @@ local treesitter = function()
       move = {
         enable = enable,
         set_jumps = true, -- whether to set jumps in the jumplist
-        goto_next_start = { ["]m"] = "@function.outer", ["]]"] = "@class.outer" },
-        goto_next_end = { ["]M"] = "@function.outer", ["]["] = "@class.outer" },
-        goto_previous_start = { ["[m"] = "@function.outer", ["[["] = "@class.outer" },
-        goto_previous_end = { ["[M"] = "@function.outer", ["[]"] = "@class.outer" },
+        goto_next_start = {
+          ["]m"] = "@function.outer", 
+          ["]]"] = "@class.outer" 
+        },
+        goto_next_end = { 
+          ["]M"] = "@function.outer", 
+          ["]["] = "@class.outer" 
+        },
+        goto_previous_start = {
+          ["[m"] = "@function.outer", 
+          ["[["] = "@class.outer" 
+        },
+        goto_previous_end = { 
+          ["[M"] = "@function.outer", 
+          ["[]"] = "@class.outer" 
+        },
       },
       select = {
         enable = enable,
+        lookahead = true,
         keymaps = {
           -- You can use the capture groups defined in textobjects.scm
           ["af"] = "@function.outer",
