@@ -49,5 +49,12 @@ ui["EdenEast/nightfox.nvim"] = {
     vim.cmd([[colorscheme nightfox]])
   end,
 }
+ 
+ui["stevearc/dressing.nvim"] = {
+  opt = true,
+  config = function()
+    require('dressing').setup()
+  end,
+}
 
 return ui
