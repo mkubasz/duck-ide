@@ -29,12 +29,12 @@ local def_map = {
   ["i|<C-k>"] = map_cmd('<Esc>O'):with_noremap(),
   ["i|<C-e>"] = map_cmd([[pumvisible() ? "\<C-e>" : "\<End>"]]):with_noremap():with_expr(),
   -- command line
-  ["c|<C-b>"] = map_cmd('<Left>'):with_noremap(),
-  ["c|<C-f>"] = map_cmd('<Right>'):with_noremap(),
-  ["c|<C-a>"] = map_cmd('<Home>'):with_noremap(),
-  ["c|<C-e>"] = map_cmd('<End>'):with_noremap(),
-  ["c|<C-d>"] = map_cmd('<Del>'):with_noremap(),
-  ["c|<C-h>"] = map_cmd('<BS>'):with_noremap(),
+  ["c|<C-b>"] = map_cmd("<Left>"):with_noremap(),
+  ["c|<C-f>"] = map_cmd("<Right>"):with_noremap(),
+  ["c|<C-a>"] = map_cmd("<Home>"):with_noremap(),
+  ["c|<C-e>"] = map_cmd("<End>"):with_noremap(),
+  ["c|<C-d>"] = map_cmd("<Del>"):with_noremap(),
+  ["c|<C-h>"] = map_cmd("<BS>"):with_noremap(),
   ["c|<C-t>"] = map_cmd([[<C-R>=expand("%:p:h") . "/" <CR>]]):with_noremap()
 }
 
@@ -45,7 +45,7 @@ local os_map = {
   ["i|<C-q>"] = map_cmd('<Esc>:wq<CR>')
 }
 
-local global = require 'core.global'
+local global = require("core.global")
 if global.is_mac then
   os_map = {
     ["n|<d-s>"] = map_cu("w"):with_silent(),
@@ -55,6 +55,16 @@ if global.is_mac then
     ["n|<d-w>"] = map_cu("wqa!"):with_silent(),
     ["i|<d-w>"] = map_cu('"normal :wqa!"'):with_noremap():with_silent(),
     ["v|<d-w>"] = map_cu('"normal :wqa!"'):with_noremap():with_silent()
+  }
+else
+  os_map = {
+    ["n|<m-s>"] = map_cu("w"):with_silent(),
+    ["i|<m-s>"] = map_cu('"normal :w"'):with_noremap():with_silent(),
+    ["v|<m-s>"] = map_cu('"normal :w"'):with_noremap():with_silent(),
+
+    ["n|<m-w>"] = map_cu("wqa!"):with_silent(),
+    ["i|<m-w>"] = map_cu('"normal :wqa!"'):with_noremap():with_silent(),
+    ["v|<m-w>"] = map_cu('"normal :wqa!"'):with_noremap():with_silent()
   }
 end
 

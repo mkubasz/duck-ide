@@ -9,7 +9,7 @@ function config.lualine()
 
   require("lualine").setup({
 
-      })
+  })
 end
 
 function config.nvim_gps()
@@ -47,10 +47,18 @@ function config.nvim_bufferline()
       enforce_regular_tabs = false,
       always_show_bufferline = false,
       sort_by = "directory",
+          offsets = {
+      {
+        filetype = "NvimTree",
+        text = "File Explorer",
+        highlight = "Directory",
+        text_align = "left"
+      }
+    }
     },
   })
   vim.api.nvim_set_keymap('n', '[b', ':BufferLineCycleNext<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', ']b', ':BufferLineCyclePrev<CR>', { noremap = true, silent = true })
+  vim.api.nvim_set_keymap('n', ']b', ':BufferLineCyclePrev<CR>', { noremap = true, silent = true })
 end
 
 

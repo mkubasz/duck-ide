@@ -7,13 +7,13 @@ lang["nathom/filetype.nvim"] = {
   end,
 }
 
-lang["nvim-treesitter/nvim-treesitter"] = { 
-  opt = true, 
-  config = conf.nvim_treesitter 
+lang["nvim-treesitter/nvim-treesitter"] = {
+  opt = true,
+  config = conf.nvim_treesitter
 }
 
 lang["nvim-treesitter/nvim-treesitter-textobjects"] = {
-  opt = true,	
+  opt = true,
   after = "nvim-treesitter",
 }
 
@@ -21,15 +21,25 @@ lang["RRethy/nvim-treesitter-textsubjects"] = {
   opt = true,
 }
 
+lang["p00f/nvim-ts-rainbow"] = {
+  opt = true,
+}
+
 lang["nvim-treesitter/nvim-treesitter-refactor"] = {
-  after = "nvim-treesitter-textobjects", 
-  config = conf.treesitter_ref, 
+  after = "nvim-treesitter-textobjects",
+  config = conf.treesitter_ref,
   opt = true,
 }
 
 lang["ThePrimeagen/refactoring.nvim"] = {
   opt = true,
   config = conf.refactor,
+}
+
+lang["simrat39/symbols-outline.nvim"] = {
+  opt = true,
+  cmd = { "SymbolsOutline", "SymbolsOutlineOpen" },
+  config = conf.outline,
 }
 
 lang["stevearc/aerial.nvim"] = {
@@ -39,8 +49,8 @@ lang["stevearc/aerial.nvim"] = {
 }
 
 lang["jose-elias-alvarez/null-ls.nvim"] = {
-  opt = true, 
-  config = require("modules.lang.null-ls").config 
+  opt = true,
+  config = require("modules.lang.null-ls").config
 }
 
 lang["ray-x/navigator.lua"] = {

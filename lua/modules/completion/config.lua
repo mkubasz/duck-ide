@@ -1,6 +1,34 @@
 local global = require("core.global")
 local config = {}
 
+local kind_icons = {
+  Text = "",
+  Method = "",
+  Function = "",
+  Constructor = "",
+  Field = "ﰠ",
+  Variable = "",
+  Class = "ﴯ",
+  Interface = "",
+  Module = "",
+  Property = "ﰠ",
+  Unit = "",
+  Value = "",
+  Enum = "",
+  Keyword = "",
+  Snippet = "",
+  Color = "",
+  File = "",
+  Reference = "",
+  Folder = "",
+  EnumMember = "",
+  Constant = "",
+  Struct = "",
+  Event = "",
+  Operator = "",
+  TypeParameter = ""
+}
+
 function config.nvim_lsp()
   local lspclient = require("modules.completion.lsp")
   lspclient.setup()
@@ -70,11 +98,10 @@ function config.nvim_cmp()
     sources = cmp.config.sources({
       { name = 'cmp_tabnine' },
       { name = 'nvim_lsp' },
+      { name = 'buffer' },
       { name = 'luasnip' },
       { name = "treesitter", keyword_length = 2 },
       { name = "look", keyword_length = 4 },
-    }, {
-      { name = 'buffer' },
     }),
     experimental = { ghost_text = true },
   })

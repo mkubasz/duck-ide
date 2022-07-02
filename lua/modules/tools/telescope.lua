@@ -5,7 +5,7 @@ local actions = require('telescope.actions')
 M = {}
 
 M.setup = function()
-  loader("telescope-fzf-native.nvim telescope-live-grep-raw.nvim telescope-file-browser.nvim")
+  loader("telescope-fzf-native.nvim telescope-live-grep-args.nvim telescope-file-browser.nvim")
 
   telescope.setup({
     prompt_prefix = "❯ ",
@@ -68,7 +68,7 @@ M.setup = function()
   })
 
   telescope.load_extension("fzf")
-  telescope.load_extension("live_grep_raw")
+  telescope.load_extension("live_grep_args")
   telescope.load_extension("file_browser")
 end
 

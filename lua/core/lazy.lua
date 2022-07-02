@@ -44,6 +44,7 @@ function Lazyload()
     "packer",
     "csv",
     "txt",
+    "defx",
   }
 
   local syn_on = not vim.tbl_contains(disable_ft, vim.bo.filetype)
@@ -76,9 +77,10 @@ function Lazyload()
   end
 
   if load_ts_plugins then
-    plugins = "nvim-treesitter-textobjects"
+    plugins = "nvim-treesitter-textobjects nvim-ts-rainbow"
     loader(plugins)
     loader("refactoring.nvim")
+    loader("indent-blankline.nvim") 
   end
 
   if load_lsp and use_nulls() then

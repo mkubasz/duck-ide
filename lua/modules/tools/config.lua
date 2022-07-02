@@ -26,7 +26,7 @@ function config.floaterm()
   local fzf = Terminal:new({ cmd = "fzf", hidden = true })
 
   function _fzf_toggle()
-    lazygit:toggle()
+    fzf:toggle()
   end
   vim.cmd("command! FZF lua _fzf_toggle()")
 end

@@ -1,13 +1,13 @@
-local global = require 'core.global'
+local global = require("core.global")
 local vim = vim
 
 local createdir = function()
   local data_dir = {
-    global.cache_dir .. 'backup', 
-    global.cache_dir .. 'session', 
-    global.cache_dir .. 'swap',
-    global.cache_dir .. 'tags', 
-    global.cache_dir .. 'undo'
+    global.cache_dir .. "backup", 
+    global.cache_dir .. "session", 
+    global.cache_dir .. "swap",
+    global.cache_dir .. "tags", 
+    global.cache_dir .. "undo",
   }
   if vim.fn.isdirectory(global.cache_dir) == 0 then
     os.execute("mkdir -p " .. global.cache_dir)
@@ -43,15 +43,15 @@ end
 local leader_map = function()
   vim.g.mapleader = "\\"
   vim.api.nvim_set_keymap(
-    'n', 
-    ' ', 
-    '', 
+    "n", 
+    " ", 
+    "", 
     {noremap = true}
   )
   vim.api.nvim_set_keymap(
-    'x', 
-    ' ', 
-    '', 
+    "x", 
+    " ", 
+    "", 
     {noremap = true}
   )
 end
@@ -69,13 +69,14 @@ local load_core = function()
     require 'impatient'
   end
 
-  pack.ensure_plugins()
-  require('core.options')
-  require('core.mapping')
-  require('keymap')
-  require('core.event')
-  pack.load_compile()
-  require('core.lazy')
+  if pack.ensure_plugins() == "installed" then
+    require('core.options')
+    require('core.mapping')
+    require('keymap')
+    require('core.event')
+    pack.load_compile()
+    require('core.lazy')
+  end
 end
 
 load_core()

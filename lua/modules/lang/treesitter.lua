@@ -6,6 +6,11 @@ local treesitter = function()
     highlight = {
       enable = true,
     },
+    rainbow = {
+      enable = true,
+      extended_mode = true,
+      max_file_lines = nil,
+    },
     textobjects = {
       lsp_interop = {
         enable = enable,
@@ -15,20 +20,20 @@ local treesitter = function()
         enable = enable,
         set_jumps = true, -- whether to set jumps in the jumplist
         goto_next_start = {
-          ["]m"] = "@function.outer", 
-          ["]]"] = "@class.outer" 
+          ["]m"] = "@function.outer",
+          ["]]"] = "@class.outer"
         },
-        goto_next_end = { 
-          ["]M"] = "@function.outer", 
-          ["]["] = "@class.outer" 
+        goto_next_end = {
+          ["]M"] = "@function.outer",
+          ["]["] = "@class.outer"
         },
         goto_previous_start = {
-          ["[m"] = "@function.outer", 
-          ["[["] = "@class.outer" 
+          ["[m"] = "@function.outer",
+          ["[["] = "@class.outer"
         },
-        goto_previous_end = { 
-          ["[M"] = "@function.outer", 
-          ["[]"] = "@class.outer" 
+        goto_previous_end = {
+          ["[M"] = "@function.outer",
+          ["[]"] = "@class.outer"
         },
       },
       select = {
@@ -106,7 +111,6 @@ local treesitter_context = function(width)
   })
   local context = string.format("%s", f) -- convert to string, it may be a empty ts node
 
-  -- lprint(context)
   if context == "vim.NIL" then
     return " "
   end
@@ -116,7 +120,7 @@ end
 
 
 return {
- treesitter = treesitter,
- treesitter_ref = treesitter_ref,
- context = treesitter_context,
+  treesitter = treesitter,
+  treesitter_ref = treesitter_ref,
+  context = treesitter_context,
 }
