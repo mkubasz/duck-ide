@@ -14,8 +14,9 @@ completion["hrsh7th/nvim-cmp"] = {
     { "hrsh7th/cmp-nvim-lua", after = "nvim-cmp", opt = true },
     { "hrsh7th/cmp-buffer", after = "nvim-cmp", opt = true },
     { "hrsh7th/cmp-copilot", after = "nvim-cmp", opt = true },
-    { "ray-x/cmp-treesitter", after = "nvim-cmp", opt = true },
     { "hrsh7th/cmp-nvim-lsp", after = "nvim-cmp", opt = true },
+    { "hrsh7th/cmp-path", after = "nvim-cmp", opt = true },
+    { "ray-x/cmp-treesitter", after = "nvim-cmp", opt = true },
     { "f3fora/cmp-spell", after = "nvim-cmp", opt = true },
     { "octaltree/cmp-look", after = "nvim-cmp", opt = true },
     { "tzachar/cmp-tabnine",
@@ -54,6 +55,12 @@ completion["ray-x/lsp_signature.nvim"] = {
       max_height = 4,
     })
   end,
+}
+
+completion["windwp/nvim-autopairs"] = {
+  after = { "nvim-cmp" },
+  config = conf.autopairs,
+  opt = true,
 }
 
 return completion

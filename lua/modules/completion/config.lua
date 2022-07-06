@@ -1,34 +1,6 @@
 local global = require("core.global")
 local config = {}
 
-local kind_icons = {
-  Text = "",
-  Method = "",
-  Function = "",
-  Constructor = "",
-  Field = "ﰠ",
-  Variable = "",
-  Class = "ﴯ",
-  Interface = "",
-  Module = "",
-  Property = "ﰠ",
-  Unit = "",
-  Value = "",
-  Enum = "",
-  Keyword = "",
-  Snippet = "",
-  Color = "",
-  File = "",
-  Reference = "",
-  Folder = "",
-  EnumMember = "",
-  Constant = "",
-  Struct = "",
-  Event = "",
-  Operator = "",
-  TypeParameter = ""
-}
-
 function config.nvim_lsp()
   local lspclient = require("modules.completion.lsp")
   lspclient.setup()
@@ -49,8 +21,30 @@ function config.nvim_cmp()
         luasnip.lsp_expand(args.body)
       end,
     },
+    formatting = {
+      format = function(entry, vim_item)
+        if cmp_kind == nil then
+          cmp_kind = require("navigator.lspclient.lspkind").cmp_kind
+        end
+        vim_item.kind = cmp_kind(vim_item.kind)
+        vim_item.menu = ({
+          buffer = " ﬘",
+          nvim_lsp = " ",
+          luasnip = " 🐍",
+          treesitter = " ",
+          nvim_lua = " ",
+          spell = " 暈",
+          emoji = "ﲃ",
+          cmp_tabnine = " ",
+          look = "﬜",
+        })[entry.source.name]
+        return vim_item
+      end,
+    },
     completion = {
-      autocomplete = { require("cmp.types").cmp.TriggerEvent.TextChanged },
+      autocomplete = {
+        require("cmp.types").cmp.TriggerEvent.TextChanged
+      },
       completeopt = "menu,menuone,noselect",
     },
     mapping = {
@@ -102,10 +96,17 @@ function config.nvim_cmp()
       { name = 'luasnip' },
       { name = "treesitter", keyword_length = 2 },
       { name = "look", keyword_length = 4 },
+      { name = "path" },
     }),
     experimental = { ghost_text = true },
   })
 
+  require("packer").loader("nvim-autopairs")
+  local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+  cmp.event:on(
+    "confirm_done",
+    cmp_autopairs.on_confirm_done({ map_char = { tex = "" } })
+  )
 end
 
 function config.luasnip()
@@ -124,7 +125,71 @@ function config.tabnine()
     max_num_results = 20,
     sort = true,
     run_on_every_keystroke = true,
+    snippet_placeholder = "..",
+    show_prediction_strength = false,
   })
+end
+
+function config.autopairs()
+  local has_autopairs, autopairs = pcall(require, "nvim-autopairs")
+  if not has_autopairs then
+    print("autopairs not loaded")
+
+    local loader = require"packer".loader
+    loader('nvim-autopairs')
+    has_autopairs, autopairs = pcall(require, "nvim-autopairs")
+    if not has_autopairs then
+      print("autopairs not installed")
+      return
+    end
+  end
+
+  local npairs = require("nvim-autopairs")
+  local Rule = require("nvim-autopairs.rule")
+  npairs.setup({
+    disable_filetype = {"TelescopePrompt", "guihua", "guihua_rust", "clap_input"},
+    autopairs = {enable = true},
+    ignored_next_char = string.gsub([[ [%w%%%'%[%"%.] ]], "%s+", ""), 
+    enable_check_bracket_line = false,
+    html_break_line_filetype = {'html', 'vue', 'typescriptreact', 'svelte', 'javascriptreact'},
+    check_ts = true,
+    ts_config = {
+      lua = {'string'},
+      javascript = {'template_string'},
+      java = false    
+    },
+    fast_wrap = {
+      map = '<M-e>',
+      chars = {'{', '[', '(', '"', "'", "`"},
+      pattern = string.gsub([[ [%'%"%`%+%)%>%]%)%}%,%s] ]], '%s+', ''),
+      end_key = '$',
+      keys = 'qwertyuiopzxcvbnmasdfghjkl',
+      check_comma = true,
+      hightlight = 'Search'
+    }
+  })
+  local ts_conds = require('nvim-autopairs.ts-conds')
+  -- you need setup cmp first put this after cmp.setup()
+
+  npairs.add_rules {
+    Rule(" ", " "):with_pair(function(opts)
+      local pair = opts.line:sub(opts.col - 1, opts.col)
+      return vim.tbl_contains({"()", "[]", "{}"}, pair)
+    end), Rule("(", ")"):with_pair(function(opts)
+      return opts.prev_char:match ".%)" ~= nil
+    end):use_key ")", Rule("{", "}"):with_pair(function(opts)
+      return opts.prev_char:match ".%}" ~= nil
+    end):use_key "}", Rule("[", "]"):with_pair(function(opts)
+      return opts.prev_char:match ".%]" ~= nil
+    end):use_key "]", Rule("%", "%", "lua") -- press % => %% is only inside comment or string
+    :with_pair(ts_conds.is_ts_node({'string', 'comment'})),
+    Rule("$", "$", "lua"):with_pair(ts_conds.is_not_ts_node({'function'}))
+  }
+
+  -- If you want insert `(` after select function or method item
+  local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+  local cmp = require('cmp')
+  cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done({map_char = {tex = ''}}))
 end
 
 return config

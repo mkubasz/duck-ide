@@ -2,7 +2,6 @@ local tools = {}
 local conf = require("modules.tools.config")
 
 tools["nvim-telescope/telescope.nvim"] = {
-  cmd = "Telescope",
   config = conf.telescope,
   setup = conf.telescope_preload,
   requires = {
@@ -35,6 +34,25 @@ tools["akinsho/toggleterm.nvim"] = {
   cmd = { "ToggleTerm", "TermExec" },
   event = { "CmdwinEnter", "CmdlineEnter" },
   config = conf.floaterm,
+}
+
+tools["lewis6991/gitsigns.nvim"] = {
+  config = conf.gitsigns,
+  opt = true,
+}
+
+tools["TimUntersberger/neogit"] = {
+  cmd = { "Neogit" },
+  config = conf.neogit,
+}
+
+tools["tanvirtin/vgit.nvim"] = { -- gitsign has similar features
+  setup = function()
+    vim.o.updatetime = 2000
+  end,
+  cmd = { "VGit" },
+  opt = true,
+  config = conf.vgit,
 }
 
 return tools

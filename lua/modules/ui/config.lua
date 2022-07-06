@@ -62,7 +62,7 @@ function config.nvim_bufferline()
 end
 
 
-function config.nvim_tree()
+function config.neo_tree()
   require("neo-tree").setup({
     enable_git_status = true,
     enable_diagnostics = true,

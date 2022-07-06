@@ -64,6 +64,7 @@ function Lazyload()
 
   local gitrepo = vim.fn.isdirectory(".git/index")
   if gitrepo then
+    loader("gitsigns.nvim vgit.nvim")
   end
 
   if load_lsp then
@@ -80,11 +81,11 @@ function Lazyload()
     plugins = "nvim-treesitter-textobjects nvim-ts-rainbow"
     loader(plugins)
     loader("refactoring.nvim")
-    loader("indent-blankline.nvim") 
+    loader("indent-blankline.nvim")
   end
 
   if load_lsp and use_nulls() then
-     loader("null-ls.nvim")
+    loader("null-ls.nvim")
   end
 end
 
@@ -113,4 +114,4 @@ vim.defer_fn(function()
   loader("dressing.nvim")
   loader("formatter.nvim")
   loader("harpoon")
-end, lazy_timer + 80)
+end, lazy_timer + 90)

@@ -17,14 +17,14 @@ function Packer:load_plugins()
     local list = {}
     local tmp = vim.split(fn.globpath(modules_dir, "*/plugins.lua"), "\n")
     for _, f in ipairs(tmp) do
-      list[#list + 1] = f:sub(#modules_dir - 6, -1)
+      list[#list + 1] = string.match(f, "lua/(.+).lua$")
     end
     return list
   end
 
   local plugins_file = get_plugins_list()
   for _, m in ipairs(plugins_file) do
-    local repos = require(m:sub(0, #m - 4))
+    local repos = require(m)
     for repo, conf in pairs(repos) do
       self.repos[#self.repos + 1] = vim.tbl_extend("force", { repo }, conf)
     end
@@ -44,7 +44,7 @@ function Packer:load_packer()
   local use_rocks = packer.use_rocks
   self:load_plugins()
   use({ "wbthomason/packer.nvim" })
-  use {'lewis6991/impatient.nvim'}
+  use { 'lewis6991/impatient.nvim' }
   for _, repo in ipairs(self.repos) do
     use(repo)
   end
@@ -63,7 +63,7 @@ function Packer:init_ensure_plugins()
       assert("make compile path dir faield")
     end)
     self:load_packer()
-    packer.install()
+    packer.sync()
     return "installing"
   end
   return "installed"
@@ -82,6 +82,15 @@ function plugins.ensure_plugins()
   return Packer:init_ensure_plugins()
 end
 
+function plugins.register_plugin(repo)
+  table.insert(Packer.repos, repo)
+end
+
+function plugins.compile_notify()
+  plugins.compile()
+  vim.notify('Compile Done!', 'info', { title = 'Packer' })
+end
+
 function plugins.auto_compile()
   local file = vim.fn.expand("%:p")
   if file:match(modules_dir) or file:match(vim.fn.stdpath("config")) then
@@ -95,6 +104,7 @@ function plugins.compile_loader()
   plugins.clean()
   plugins.compile()
   vim.cmd([[silent UpdateRemotePlugins]])
+  require('packer_compiled')
 end
 
 function plugins.load_compile()
@@ -106,7 +116,7 @@ function plugins.load_compile()
     plugins.compile()
     require("packer_compiled")
   end
-  vim.cmd([[command! PackerCompile lua require('core.pack').compile()]])
+  vim.cmd([[command! PackerCompile lua require('core.pack').compile_notify()]])
   vim.cmd([[command! PackerInstall lua require('core.pack').install()]])
   vim.cmd([[command! PackerUpdate lua require('core.pack').update()]])
   vim.cmd([[command! PackerSync lua require('core.pack').sync()]])

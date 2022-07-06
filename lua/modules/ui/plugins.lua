@@ -30,7 +30,7 @@ ui["akinsho/bufferline.nvim"] = {
 ui["nvim-neo-tree/neo-tree.nvim"] = {
   branch = "v2.x",
   requires = { "MunifTanjim/nui.nvim" },
-  config = conf.nvim_tree,
+  config = conf.neo_tree,
 }
 
 ui["folke/tokyonight.nvim"] = {
@@ -55,6 +55,11 @@ ui["stevearc/dressing.nvim"] = {
   config = function()
     require('dressing').setup()
   end,
+}
+
+ui["sidebar-nvim/sidebar.nvim"] = {
+  cmd = { "SidebarNvimToggle", "SidebarNvimOpen" },
+  config = conf.sidebar,
 }
 
 return ui

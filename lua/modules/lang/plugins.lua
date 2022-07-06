@@ -23,6 +23,7 @@ lang["RRethy/nvim-treesitter-textsubjects"] = {
 
 lang["p00f/nvim-ts-rainbow"] = {
   opt = true,
+  event = {"CursorHold", "CursorHoldI"},
 }
 
 lang["nvim-treesitter/nvim-treesitter-refactor"] = {
@@ -57,6 +58,31 @@ lang["ray-x/navigator.lua"] = {
   requires = { "ray-x/guihua.lua", run = "cd lua/fzy && make" },
   opt = true,
   config = conf.navigator
+}
+
+lang["glepnir/lspsaga.nvim"] = {
+  opt = true,
+  cmd = {
+    "LspSaga",
+  },
+  config = function()
+    local saga = require("lspsaga")
+
+    saga.init_lsp_saga({
+      border_style = "rounded",
+      code_action_lightbulb = {
+        enable = false,
+      },
+    })
+  end,
+}
+
+lang["m-demare/hlargs.nvim"] = {
+  opt = true,
+  after = "nvim-treesitter",
+  config = function()
+    require("hlargs").setup()
+  end,
 }
 
 return lang

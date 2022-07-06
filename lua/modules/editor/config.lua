@@ -1,66 +1,4 @@
 local config = {}
-function config.autopairs()
-  local has_autopairs, autopairs = pcall(require, "nvim-autopairs")
-  if not has_autopairs then
-    print("autopairs not loaded")
-
-    local loader = require"packer".loader
-    loader('nvim-autopairs')
-    has_autopairs, autopairs = pcall(require, "nvim-autopairs")
-    if not has_autopairs then
-      print("autopairs not installed")
-      return
-    end
-  end
-
-  local npairs = require("nvim-autopairs")
-  local Rule = require("nvim-autopairs.rule")
-  npairs.setup({
-    disable_filetype = {"TelescopePrompt", "guihua", "guihua_rust", "clap_input"},
-    autopairs = {enable = true},
-    ignored_next_char = string.gsub([[ [%w%%%'%[%"%.] ]], "%s+", ""), -- "[%w%.+-"']",
-    enable_check_bracket_line = false,
-    html_break_line_filetype = {'html', 'vue', 'typescriptreact', 'svelte', 'javascriptreact'},
-    check_ts = true,
-    ts_config = {
-      lua = {'string'}, -- it will not add pair on that treesitter node
-      -- go = {'string'},
-      javascript = {'template_string'},
-      java = false -- don't check treesitter on java
-    },
-    fast_wrap = {
-      map = '<M-e>',
-      chars = {'{', '[', '(', '"', "'", "`"},
-      pattern = string.gsub([[ [%'%"%`%+%)%>%]%)%}%,%s] ]], '%s+', ''),
-      end_key = '$',
-      keys = 'qwertyuiopzxcvbnmasdfghjkl',
-      check_comma = true,
-      hightlight = 'Search'
-    }
-  })
-  local ts_conds = require('nvim-autopairs.ts-conds')
-  -- you need setup cmp first put this after cmp.setup()
-
-  npairs.add_rules {
-    Rule(" ", " "):with_pair(function(opts)
-      local pair = opts.line:sub(opts.col - 1, opts.col)
-      return vim.tbl_contains({"()", "[]", "{}"}, pair)
-    end), Rule("(", ")"):with_pair(function(opts)
-      return opts.prev_char:match ".%)" ~= nil
-    end):use_key ")", Rule("{", "}"):with_pair(function(opts)
-      return opts.prev_char:match ".%}" ~= nil
-    end):use_key "}", Rule("[", "]"):with_pair(function(opts)
-      return opts.prev_char:match ".%]" ~= nil
-    end):use_key "]", Rule("%", "%", "lua") -- press % => %% is only inside comment or string
-    :with_pair(ts_conds.is_ts_node({'string', 'comment'})),
-    Rule("$", "$", "lua"):with_pair(ts_conds.is_not_ts_node({'function'}))
-  }
-
-  -- If you want insert `(` after select function or method item
-  local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-  local cmp = require('cmp')
-  cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done({map_char = {tex = ''}}))
-end
 
 function config.formatter()
   require('formatter').setup({
@@ -96,6 +34,61 @@ function config.comment()
       end
     end
   })
+end
+
+function config.ufo()
+  --- not all LSP support this
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  capabilities.textDocument.foldingRange = {
+    dynamicRegistration = false,
+    lineFoldingOnly = true,
+  }
+  local handler = function(virtText, lnum, endLnum, width, truncate)
+    local newVirtText = {}
+    local suffix = ("  %d "):format(endLnum - lnum)
+    local sufWidth = vim.fn.strdisplaywidth(suffix)
+    local targetWidth = width - sufWidth
+    local curWidth = 0
+    for _, chunk in ipairs(virtText) do
+      local chunkText = chunk[1]
+      local chunkWidth = vim.fn.strdisplaywidth(chunkText)
+      if targetWidth > curWidth + chunkWidth then
+        table.insert(newVirtText, chunk)
+      else
+        chunkText = truncate(chunkText, targetWidth - curWidth)
+        local hlGroup = chunk[2]
+        table.insert(newVirtText, { chunkText, hlGroup })
+        chunkWidth = vim.fn.strdisplaywidth(chunkText)
+        -- str width returned from truncate() may less than 2nd argument, need padding
+        if curWidth + chunkWidth < targetWidth then
+          suffix = suffix .. (" "):rep(targetWidth - curWidth - chunkWidth)
+        end
+        break
+      end
+      curWidth = curWidth + chunkWidth
+    end
+    table.insert(newVirtText, { suffix, "MoreMsg" })
+    return newVirtText
+  end
+  local whitelist = {
+    ["gotmpl"] = "indent",
+    ["python"] = "lsp",
+    ["html"] = "indent",
+  }
+  require("ufo").setup({
+    -- fold_virt_text_handler = handler,
+    provider_selector = function(bufnr, filetype)
+      if whitelist[filetype] then
+        return whitelist[filetype]
+      end
+      return ""
+    end,
+  })
+  local bufnr = vim.api.nvim_get_current_buf()
+  local ft = vim.o.ft
+  if whitelist[ft] then
+    require("ufo").setVirtTextHandler(bufnr, handler)
+  end
 end
 
 return config
